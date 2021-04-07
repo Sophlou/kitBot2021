@@ -15,5 +15,10 @@ package frc.robot;
 public final class Constants {
     public static final double ENCODER_DISTANCE_METERS_PER_PULSE = (.1524 * 3.14159265)/29020.16;
 
-
+    // Constants for the odometry stuff
+    public static final double kS = 0.4;
+    public static final double kV = 4.09;
+    public static final double kA = 0.202;
+    public static final double kP = 0.0000156;
+    public static final double TRACK_WIDTH = .687922496;
 }
