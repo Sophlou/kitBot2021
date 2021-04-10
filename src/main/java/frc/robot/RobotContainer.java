@@ -88,6 +88,9 @@ public class RobotContainer {
       .whenPressed(new DriveWithJoysticksCommand(driveTrainSubsystem, leftStick, leftStick));
     rightThumbLeft
       .whenPressed(new DriveWithArcadeCommand(driveTrainSubsystem, leftStick));
+    rightThumbMain
+      .whenPressed(new ResetEncoderCommand(driveTrainSubsystem));
+    
   }
 
   /**
