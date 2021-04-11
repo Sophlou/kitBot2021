@@ -8,6 +8,9 @@ import static frc.robot.Constants.*;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 // import edu.wpi.first.wpilibj.geometry.Pose2d;
 // import edu.wpi.first.wpilibj.geometry.Rotation2d;
 // import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
@@ -41,6 +44,8 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   public boolean isReversed = false;
 
+  public final DifferentialDriveOdometry odometry;
+
   public DriveTrainSubsystem() {
     leftMain = new WPI_TalonFX((11));
     leftFollow = new WPI_TalonFX((12));
@@ -59,11 +64,12 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
     
 
-    leftMain.setNeutralMode(NeutralMode.Coast);
-    leftFollow.setNeutralMode(NeutralMode.Coast);
-    rightMain.setNeutralMode(NeutralMode.Coast);
-    rightFollow.setNeutralMode(NeutralMode.Coast);
+    leftMain.setNeutralMode(NeutralMode.Brake);
+    leftFollow.setNeutralMode(NeutralMode.Brake);
+    rightMain.setNeutralMode(NeutralMode.Brake);
+    rightFollow.setNeutralMode(NeutralMode.Brake);
 
+    odometry = new DifferentialDriveOdometry(getHeading());
     twoMotorDrive = new DifferentialDrive(leftMain, rightMain);
   }
 
@@ -100,6 +106,22 @@ public class DriveTrainSubsystem extends SubsystemBase {
     return navx.getYaw();
   }
 
+  public Rotation2d getHeading() {
+
+    double[] ypr = {0,0,0};
+    navx.getYaw();
+    navx.getRoll();
+    navx.getPitch();
+    //TODO:                                                       V Might be multiplied by negative 1
+    return Rotation2d.fromDegrees(Math.IEEEremainder(ypr[0], 360.0));
+
+
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(-1*leftMain.getSelectedSensorVelocity()*ENCODER_DISTANCE_METERS_PER_PULSE * 10, rightMain.getSelectedSensorVelocity()*ENCODER_DISTANCE_METERS_PER_PULSE * 10);
+  }
+  
   public void resetOdometry(Pose2d initialPose) {
     rightMain.setSelectedSensorPosition(0);
     leftMain.setSelectedSensorPosition(0);
@@ -115,5 +137,14 @@ public class DriveTrainSubsystem extends SubsystemBase {
 
   }
 
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts) {
+    leftMain.setVoltage(-leftVolts);
+    rightMain.setVoltage(rightVolts);
+    twoMotorDrive.feed();
+  }
 
 }

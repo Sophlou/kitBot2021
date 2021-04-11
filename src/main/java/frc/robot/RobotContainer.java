@@ -6,11 +6,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
+
+import static frc.robot.Constants.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -68,13 +75,29 @@ public class RobotContainer {
   JoystickButton rightLeftArrayBM = new JoystickButton(rightStick, 15);
   JoystickButton rightLeftArrayBL = new JoystickButton(rightStick, 16);
 
+  private final ExampleRamseteCommandGroup example = new ExampleRamseteCommandGroup(driveTrainSubsystem);
 
+  SendableChooser<Command> sendableChooser = new SendableChooser<>();
+  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
     configureButtonBindings();
     driveTrainSubsystem.setDefaultCommand(driveWithArcadeCommand);
     
+    DifferentialDriveVoltageConstraint autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
+      new SimpleMotorFeedforward(KS, KV, KA), K_DRIVE_KINEMATICS, 10);
+  
+    TrajectoryConfig config = new TrajectoryConfig(
+      kMaxSpeedMetersPerSecond,
+      kMaxAccelerationMetersPerSecondSquared)
+    // Add kinematics to ensure max speed is actually obeyed
+    .setKinematics(K_DRIVE_KINEMATICS)
+    // Apply the voltage constraint
+    .addConstraint(autoVoltageConstraint);
+  
+    sendableChooser.setDefaultOption("Example", example);
+    SmartDashboard.putData(sendableChooser);
   }
 
   /**
@@ -100,6 +123,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return sendableChooser.getSelected();
   }
 }

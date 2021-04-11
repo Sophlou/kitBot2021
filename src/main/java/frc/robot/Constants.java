@@ -20,6 +20,29 @@ import edu.wpi.first.wpilibj.util.Units;
 public final class Constants {
     public static final double ENCODER_DISTANCE_METERS_PER_PULSE = (.1524 * 3.14159265)/29020.16;
 
+    public static final double OUTER_INTAKE_MOTOR_SPEED = .65;
+	public static final double INNER_INTAKE_MOTOR_SPEED = 1;
+	public static final double CONVEYOR_MOTOR_SPEED = .6;
+	public static final double STOP_MOTOR = 0;
+
+	public static final double TOF_SAMPLE_TIME = 25;
+
+	public static final int kTimeoutMs = 30;
+	public static final int kPIDLoopIdx = 0;
+
+	//public static final Gains kGains_Velocit = new Gains(0.049, 0.1, 0.0, 0.0);
+	public static final double DRIVE_FORWARD_TIME = 3;
+	public static final double AUTONOMOUS_SPEED = .5;
+
+	public static final double STEER_K = 0.03;
+	public static final double DRIVE_K = 0.26;
+	public static final double DESIRED_TARGET_AREA = 13.0;
+	public static final double MAX_DRIVE = 0.7;
+
+	public static final double LIMELIGHT_DEADBAND = 1;
+    public static final double MIN_STEER_K = .4;
+    
+
     // Constants for the odometry stuff
     public static final double kS = 0.4;
     public static final double kV = 4.09;
@@ -41,7 +64,7 @@ public final class Constants {
 
 	public static final double KAVoltSecondsSquaredPerMeter = 0.0;
   
-	//public static final DifferentialDriveKinematics K_DRIVE_KINEMATICS = new DifferentialDriveKinematics(Units.inchesToMeters(26.625));
+    public static final DifferentialDriveKinematics K_DRIVE_KINEMATICS = new DifferentialDriveKinematics(TRACK_WIDTH);
 
 	public static final double kMaxSpeedMetersPerSecond = 3.1;
 	public static final double kMaxAccelerationMetersPerSecondSquared = 3.1;

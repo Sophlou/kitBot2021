@@ -6,7 +6,9 @@ package frc.robot.commands;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Instant;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.controller.PIDController;
@@ -16,10 +18,12 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.DriveTrainSubsystem;
-
+//import frc.robot.commands.ActivateIntakeCommand;
 import frc.robot.commands.ResetEncoderCommand;
-import frc.robot.commands.*;
+import frc.robot.subsystems.DriveTrainSubsystem;
+import frc.robot.commands.ResetOdometryCommand;
+
+import static frc.robot.Constants.*;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -29,7 +33,7 @@ public class ExampleRamseteCommandGroup extends SequentialCommandGroup {
   
   /** Creates a new BarrelRacingPath. */
   public ExampleRamseteCommandGroup(DriveTrainSubsystem driveTrainSubsystem) {
-    String trajectoryJSON = "paths/output/barrelRacingPath3.wpilib.json";
+    String trajectoryJSON = "paths/output/practice.wpilib.json";
     try {
         Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(trajectoryJSON);
         trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
@@ -37,7 +41,7 @@ public class ExampleRamseteCommandGroup extends SequentialCommandGroup {
         DriverStation.reportError("Unable to open trajectory: " + trajectoryJSON, ex.getStackTrace());
     }
 
-    /*RamseteCommand ramseteCommand = new RamseteCommand(
+    RamseteCommand ramseteCommand = new RamseteCommand(
       trajectory,
       driveTrainSubsystem::getPose,
       new RamseteController(kRamseteB, kRamseteZeta),
@@ -52,7 +56,7 @@ public class ExampleRamseteCommandGroup extends SequentialCommandGroup {
       driveTrainSubsystem::tankDriveVolts,
       driveTrainSubsystem
       );
-      */
+      
 
       
       //ActivateIntakeCommand activateIntakeCommand = new ActivateIntakeCommand(intakeSubsystem);
@@ -61,6 +65,6 @@ public class ExampleRamseteCommandGroup extends SequentialCommandGroup {
 
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(resetOdometryCommand);
+    addCommands(resetOdometryCommand, ramseteCommand);
   }
 }
